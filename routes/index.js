@@ -1,4 +1,5 @@
 var express = require('express');
+
 var router = express.Router();
 var userModule = require('../modules/user');
 var passCatModel = require('../modules/password_category');
