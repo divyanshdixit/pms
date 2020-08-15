@@ -1,5 +1,5 @@
 var mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost:27017/pms', {useNewUrlParser:true, useCreateIndex:true, useUnifiedTopology: true});
+mongoose.connect('mongodb+srv://divyansh:devilme96@@cluster0.svob2.mongodb.net/pms?retryWrites=true&w=majority', {useNewUrlParser:true, useCreateIndex:true, useUnifiedTopology: true});
 
 var conn = mongoose.Connection;
 
