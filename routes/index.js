@@ -253,21 +253,21 @@ router.get('/dashboard', checkLoginUser , function(req, res, next) {
     var perPage = 4;
     var page = req.params.page || 1;
     
-    var getPasswordDetails = passModel.aggregate([ 
-      {
-        $lookup:{
-          from:"password_categories",
-          localField:"password_category",
-          foreignFeild:"password_category",
-          as:"pass_docs"
-        }
-      },
-      {
-        $unwind: "$pass_docs"
-      }
-    ]).skip( (perPage*page) - perPage).limit(perPage);
+    var getPasswordDetails = passModel.find({}).skip( (perPage*page) - perPage).limit(perPage);
     // dataPerPage = dataPerPage+5;
-
+    // aggregate([ 
+    //   {
+    //     $lookup:{
+    //       from:"password_categories",
+    //       localField:"password_category",
+    //       foreignFeild:"password_category",
+    //       as:"pass_docs"
+    //     }
+    //   },
+    //   {
+    //     $unwind: "$pass_docs"
+    //   }
+    // ])
     getPasswordDetails.exec((err, data) => {
       if(err) throw err;
       if(data){
