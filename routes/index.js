@@ -252,7 +252,7 @@ router.get('/dashboard', checkLoginUser , function(req, res, next) {
     var perPage = 4;
     var page = req.params.page || 1;
     
-    var getPasswordDetails = passModel.aggregate([
+    var getPasswordDetails = passModel.aggregate([ 
       {
         $lookup:{
           from:"password_categories",
