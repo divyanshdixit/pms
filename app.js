@@ -11,6 +11,7 @@ var addNewPasswordCategoryRouter = require('./routes/addnewpasswordcategory');
 var passwordCategoryListRouter = require('./routes/passwordCateogryList');
 var addNewPasswordRouter = require('./routes/addNewPassword');
 var passwordListRouter = require('./routes/passwordList');
+var addCatAPI = require('./apis/add-category');
 
 var app = express();
 
@@ -31,6 +32,7 @@ app.use('/addnewpasswordcategory', addNewPasswordCategoryRouter )
 app.use('/passwordcategory', passwordCategoryListRouter )
 app.use('/addnewpassword', addNewPasswordRouter )
 app.use('/passwordlist', passwordListRouter )
+app.use('/api', addCatAPI )
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
