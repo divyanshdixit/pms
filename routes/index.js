@@ -1,5 +1,4 @@
 var express = require('express');
-
 var router = express.Router();
 var userModule = require('../modules/user');
 var passCatModel = require('../modules/password_category');
@@ -73,10 +72,6 @@ router.get('/',  function(req, res, next) {
   }
 });
 
-router.get('/dashboard', checkLoginUser , function(req, res, next) {
-  var loggedInUser =  localStorage.getItem('loginUser');
-  res.render('dashboard', { projectName: projectName, title: 'User Dashboard', loginUser:loggedInUser, msg:'' });
-});
 
 // login page post route => redirect to dashboard page 
 
@@ -148,201 +143,9 @@ router.get('/dashboard', checkLoginUser , function(req, res, next) {
       res.render('signup', {title:'Signup Form', projectName:projectName, msg:'User registered successfully'})
     });
   }
-
-    
-  })
-
-  // route for the category list 
-  router.get('/passwordcategory', checkLoginUser, function(req, res , next){
-    passCatFind.exec((err, data) => {
-      if(err) throw err;
-      res.render('passwordCategory', {projectName:projectName, title:'Password Cateogry List', data:data, success:''});
-    });
-  })
-
-  // delete route for password category
-  router.get('/passwordcategory/delete/:id', checkLoginUser, function(req, res , next){
-    
-    passCatModel.findByIdAndDelete(req.params.id, (err, result) => {
-      if(err) throw err;
-      if(result){
-        passCatFind.exec((err, data) => {
-          if(err) throw err;
-          res.render('passwordCategory', {projectName:projectName, title:'Password Cateogry List', data:data, success:'Category deleted successfully'});
-      })
-    }
-  })
-})
-
-  // get edit route for password category 
-  router.get('/passwordcategory/edit/:id', checkLoginUser, function(req, res , next){
-    passCatModel.findById(req.params.id, (err, data) => {
-      if(err) throw err;
-      res.render('passwordCategoryEdit', {projectName:projectName, title:'Password Cateogry Edit', data:data, success:'', errors:''})
-    })
-  })
-
-  // post edit route for password category
-  router.post('/passwordcategory/edit', checkLoginUser, function(req, res , next){
-    passCatModel.findByIdAndUpdate(req.body.id, {password_category:req.body.category_name}, (err, data) => {
-      if(err) throw err;
-      if(data){
-        res.redirect('/passwordcategory');
-        // res.render('passwordCategoryEdit', {projectName:projectName, title:'Password Cateogry Edit', success:'', errors:''})
-      }
-      
-    })
-  })
-
-  // route for add new category form
-  router.get('/addnewpasswordcategory', checkLoginUser, function(req, res , next){
-    res.render('addNewCategory', {projectName:projectName, title:'Add Category Form', errors:'', success:''});
+  
   })
   
-  router.post('/addnewpasswordcategory', checkLoginUser, [
-    // validation rules
-    body('category_name', 'Enter password category name!').isLength({min:1})
-  ], function(req, res , next){
-      const errors = validationResult(req);
-      if(!errors.isEmpty()){
-        res.render('addNewCategory', {projectName:projectName, title:'Add Category Form', errors:errors.mapped(), success:''});    
-      }else{
-        var passCatName = req.body.category_name;
-        var passcatDetails = new passCatModel({
-          password_category: passCatName
-        })
-
-        passcatDetails.save(function(err, data){
-          if(err) throw err;
-          res.render('addNewCategory', {projectName:projectName, title:'Add Category Form', errors:'', success:'Password category inserted succesfully!'});
-        });
-
-        
-      }
-    
-  })
-  
-  // route for add new password form
-  router.get('/addnewpassword', checkLoginUser, function(req, res , next){
-    passCatFind.exec((err, data) => {
-      if(err) throw err;
-    res.render('addNewPassword', {projectName:projectName, title:'Add Password Form', data:data, success:''});
-    });
-  })
-
-  // route for add new password form
-  router.post('/addnewpassword', checkLoginUser, function(req, res , next){
-    var newPassDetails = new passModel({
-      password_category:req.body.pass_cat,
-      project_name:req.body.project_name,
-      password_description:req.body.pass_description
-    });
-
-    newPassDetails.save((err, data)=>{
-       if(err) throw err;
-       passCatFind.exec((err, doc) => {
-        if(err) throw err;
-       res.render('addNewPassword', {projectName:projectName, title:'Add Password Form', data:doc, success:'Password added successfully!'});
-    })
-  });
-    
-  })
-  
-  // route for the password list 
-  router.get('/passwordlist', checkLoginUser, function(req, res , next){
-    var perPage = 4;
-    var page = req.params.page || 1;
-    
-    var getPasswordDetails = passModel.find({}).skip( (perPage*page) - perPage).limit(perPage);
-    // dataPerPage = dataPerPage+5;
-    // aggregate([ 
-    //   {
-    //     $lookup:{
-    //       from:"password_categories",
-    //       localField:"password_category",
-    //       foreignFeild:"password_category",
-    //       as:"pass_docs"
-    //     }
-    //   },
-    //   {
-    //     $unwind: "$pass_docs"
-    //   }
-    // ])
-    getPasswordDetails.exec((err, data) => {
-      if(err) throw err;
-      if(data){
-        passModel.countDocuments( (err, count) => {
-          res.render('passwordList', {projectName:projectName, title:'Password List', data:data, success:'',
-           current:page, pages: Math.ceil(count/perPage), count:count});
-        })
-        
-      }
-    })
-  });
-
-  // route for get data acc to page no
-  router.get('/passwordlist/:page', checkLoginUser, function(req, res , next){
-    var perPage = 4;
-    var page = req.params.page || 1;
-    var getPasswordDetails = passModel.find({}).skip( (perPage*page) - perPage).limit(perPage);
-    // dataPerPage = dataPerPage+5;
-
-    getPasswordDetails.exec((err, data) => {
-      if(err) throw err;
-      if(data){
-        passModel.countDocuments({}, (err, count) => {
-          if(err) throw err;
-          if(count){
-            res.render('passwordList', {projectName:projectName, title:'Password List', data:data, success:'',
-           current:page, pages: Math.ceil(count/perPage), count:count});
-          }
-        })
-        
-      }
-    })
-  });
-
-  // route for editing the password list 
-  router.get('/passwordlist/edit/:id', checkLoginUser, function(req, res , next){
-    passModel.findById(req.params.id, (err,data)=>{
-      if(err) throw err;
-      if(data)
-        console.log(data);
-      passCatFind.exec((err, response)=>{
-        if(err) throw err;
-        if(response){ 
-          console.log(response)
-          res.render('editPassword', {projectName:projectName, title:'Password List', data:data, response:response, success:''});    
-        }
-      })
-      
-    });
-  });
-
-  // post route for editing the password
-  router.post('/editpassword', checkLoginUser, function(req, res , next){
-    passModel.findByIdAndUpdate(req.body.id, {
-      password_category:req.body.pass_cat,
-      project_name:req.body.project_name,
-      password_description:req.body.pass_description
-    }, (err, data)=>{
-      if(err) throw err;
-      if(data){
-        res.redirect('/passwordlist');
-      }
-    })
-  });
-
-  router.get('/passwordlist/delete/:id', checkLoginUser, function(req, res, next){
-    passModel.findByIdAndDelete(req.params.id, (err, data)=>{
-      if(err) throw err;
-      if(data){
-        res.redirect('/passwordlist');
-        
-      }
-    })
-  })
-
   // logout 
 
   router.get('/logout', function(req, res , next){
