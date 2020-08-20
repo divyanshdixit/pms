@@ -3,7 +3,7 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-
+var session = require('express-session');
 var indexRouter = require('./routes/index');
 var dashboardRouter = require('./routes/dashboard');
 var usersRouter = require('./routes/users');
@@ -12,6 +12,9 @@ var passwordCategoryListRouter = require('./routes/passwordCateogryList');
 var addNewPasswordRouter = require('./routes/addNewPassword');
 var passwordListRouter = require('./routes/passwordList');
 var addCatAPI = require('./apis/add-category');
+var productAPI = require('./apis/product');
+var userAPI = require('./apis/user');
+var dotenv = require('dotenv').config();
 
 var app = express();
 
@@ -24,6 +27,13 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+// use the session
+app.use(session({
+secret:'anything',
+resave:false,
+saveUninitialized:true,
+cookie:{secure:true}
+}))
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
@@ -33,6 +43,8 @@ app.use('/passwordcategory', passwordCategoryListRouter )
 app.use('/addnewpassword', addNewPasswordRouter )
 app.use('/passwordlist', passwordListRouter )
 app.use('/api', addCatAPI )
+app.use('/api', productAPI )
+app.use('/userapi', userAPI )
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

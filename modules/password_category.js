@@ -1,5 +1,8 @@
 var mongoose = require('mongoose');
-mongoose.connect('mongodb+srv://divyansh:devilme96@@cluster0.svob2.mongodb.net/pms?retryWrites=true&w=majority', {useNewUrlParser:true, useCreateIndex:true, useUnifiedTopology: true});
+
+require('dotenv').config()
+
+mongoose.connect(process.env.LIVE_DB_URL, {useNewUrlParser:true, useCreateIndex:true, useUnifiedTopology: true});
 
 var conn = mongoose.Connection;
 

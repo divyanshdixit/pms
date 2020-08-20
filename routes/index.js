@@ -8,6 +8,7 @@ var passFind = passModel.find({});
 var bcryptjs = require('bcryptjs');
 const userModel = require('../modules/user');
 var jsonWebToken = require('jsonwebtoken');
+
 const { body, validationResult } = require('express-validator');
 
 if(typeof localStorage === 'undefined' || localStorage === null){
@@ -53,8 +54,10 @@ var projectName = "Password Management System";
     var userToken = localStorage.getItem('userToken');
     
     try{
+      if(req.session.username)
       var verifyToken = jsonWebToken.verify(userToken, 'loginToken');
-    
+      else
+      res.redirect('/')
     }catch(err){
       res.redirect('/');
     }
@@ -65,7 +68,7 @@ var projectName = "Password Management System";
 router.get('/',  function(req, res, next) {
   var loggedInUser = localStorage.getItem('loginUser');
   
-  if(loggedInUser){
+  if(req.session.username){
     res.redirect('/dashboard');
   }else{
     res.render('index', { projectName: projectName, title: 'Login Form', msg:'' });
@@ -91,6 +94,10 @@ router.get('/',  function(req, res, next) {
               localStorage.setItem('userToken', token);
               localStorage.setItem('loginUser', loginUsername);
 
+              // make session variable
+              req.session.username = loginUsername;
+              req.session.token = token
+
               res.redirect('/dashboard');
         }else{
           return res.render('index', { projectName: projectName, title: 'Login Form', msg:'Login Failed! Password is wrong, Please check it!' });
@@ -103,15 +110,10 @@ router.get('/',  function(req, res, next) {
     
   })
 
-  setTimeout(() => {
-    localStorage.removeItem('userToken');
-    localStorage.removeItem('loginUser');
-  }, 60*60*1000);
-
 // singup page get route
   router.get('/signup',  function(req, res, next){
     var loggedInUser = localStorage.getItem('loginUser');
-    if(loggedInUser){
+    if(req.session.username){
       res.redirect('/dashboard');
     }else{
       res.render('signup', {title:'Signup Form', projectName:projectName, msg:''})
@@ -149,6 +151,12 @@ router.get('/',  function(req, res, next) {
   // logout 
 
   router.get('/logout', function(req, res , next){
+
+    req.session.destroy(err=>{
+      if(err){
+        res.redirect('/');
+      }
+    })
     localStorage.removeItem('userToken');
     localStorage.removeItem('loginUser');
     res.redirect('/');
