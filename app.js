@@ -1,5 +1,6 @@
 var createError = require('http-errors');
 var express = require('express');
+var fs = require('fs');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
@@ -11,6 +12,8 @@ var addNewPasswordCategoryRouter = require('./routes/addnewpasswordcategory');
 var passwordCategoryListRouter = require('./routes/passwordCateogryList');
 var addNewPasswordRouter = require('./routes/addNewPassword');
 var passwordListRouter = require('./routes/passwordList');
+var zipRouter = require('./routes/getZip')
+var emailRouter = require('./routes/sendEmail')
 var addCatAPI = require('./apis/add-category');
 var productAPI = require('./apis/product');
 var userAPI = require('./apis/user');
@@ -42,6 +45,8 @@ app.use('/addnewpasswordcategory', addNewPasswordCategoryRouter )
 app.use('/passwordcategory', passwordCategoryListRouter )
 app.use('/addnewpassword', addNewPasswordRouter )
 app.use('/passwordlist', passwordListRouter )
+app.use('/getzip', zipRouter )
+app.use('/sendemail', emailRouter )
 app.use('/api', addCatAPI )
 app.use('/api', productAPI )
 app.use('/userapi', userAPI )
