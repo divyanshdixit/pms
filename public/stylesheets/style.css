@@ -7,3 +7,9 @@ body {
 a {
   color: #00B7FF;
 }
+
+@media screen and (max-width:767px){
+  body{
+    width:100%
+  }
+}
