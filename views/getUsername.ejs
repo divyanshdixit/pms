@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="description" content="Node Js Application with Chat Functionality">
+    <meta name="keywords" content="HTML, CSS, JavaScript, Node Js, Express Js, Socket.io, Mongo DB">
+    <meta name="author" content="Divyansh Dixit">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title><%= title %></title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css"/>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+
+  <script>
+    var socket = io();
+    var user;
+
+    function setUsername(){
+        socket.emit('setusername', $('#name').val())
+    }
+
+    socket.on('userSet', function(data){
+        user = data.username;
+
+        // document.write('Welcome <strong> '+ user + ' </strong>, You can chat now.<br><br>')
+        $('.set-username').css('display', 'none');
+        $('#error').css('display', 'none');
+        $('.container').append('<div class="row">'+
+            '<div class="col-md-12"> <p> Welcome <strong> '+ user + ' </strong>, You can chat now. </p> </div>'+
+            '<div class="col-md-12"> <div class="count">' + data.usernumber + ' users are connected! </div> '+
+            '<div class="form-group"> <input type="text" class="form-control" id="message"/>'+
+            '<button type="button" class="btn btn-primary" onclick="sendMessage()"> Send message </button>'+
+            '<div id="message-container" class="customBox"> </div> '+
+            '</div> </div> ')
+    })
+    
+    function sendMessage(){
+        var msg = $('#message').val();
+        socket.emit('msg', {message:msg, username:user})
+        $('#message').val('')
+    }
+
+    socket.on('newmsg', function(data) {
+        if(data) {
+            $('#message-container').append('<div class="col-md-12"><b>' + data.username + '</b>: ' + data.message + '</div><br>')
+        }
+    })
+
+    socket.on('userExists', function(data){
+        if(data){
+            // $('#error').text(data);
+            document.getElementById('error').innerHTML = data
+        }
+        
+        
+    })
+
+    // socket.on('team_member_count', function(data){
+    //     $('body').append(data.number + ' user are connected!');
+    // })
+
+    </script>
+    </head>
+
+  <body>
+    
+    <div class="container">
+        <nav class="navbar navbar-dark  navbar-expand-lg bg-dark">
+            <!-- Navbar content -->
+            <a class="navbar-brand" href="#">PMS</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarText">
+              <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                  <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      Password Category
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                      <a class="dropdown-item" href="/addnewpasswordcategory">Add New Category</a>
+                      <a class="dropdown-item" href="/passwordcategory">View All Category</a>
+                    </div>
+                  </li>
+                  <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      Password Details
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                      <a class="dropdown-item" href="/addnewpassword">Add New Password</a>
+                      <a class="dropdown-item" href="/passwordlist">View All Password</a>
+                    </div>
+                  </li>
+              </ul>
+              <span class="navbar-text">
+                <%= projectName %>
+              </span>
+            </div>
+        </nav>
+    
+        <div class="row">
+
+        <!-- showing error for alredy taken username -->
+
+        <div class="col-md-12">
+            <p id="error"></p>
+        </div>
+
+        <!--  -->
+
+            <div class="col-md-12" style="padding-top: 20px;">
+            <div class="set-username">
+                <input type="text" name="name" value="" id="name" placeholder="Enter your name!"/>
+                <button type="button" name="chat" class="btn btn-primary" onclick="setUsername()"> Let Me Chat! </button>
+            </div>
+
+        </div>
+
+    </div>
+
+    </div>
+    <footer>
+        <center> <p> Copyright &copy; </p> </center>
+    </footer>
+    </body>
+    </html>
