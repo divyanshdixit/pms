@@ -20,8 +20,8 @@ var userAPI = require('./apis/user');
 var dotenv = require('dotenv').config();
 
 var app = express();
-var http = require('http').Server(app)
-var io = require('socket.io')(http);
+// var http = require('http').Server(app)
+// var io = require('socket.io')(http);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -57,32 +57,31 @@ app.get('/chat', function(req, res){
   res.render('getUsername', {title:'Chat Web App', projectName:'Chat Feature- Password Management System'})
 })
 
-var users = [];
-var connectedUser = 0;
 
-io.on('connection', function(socket){
-  console.log('User is connected!');
-  connectedUser++;
 
-  socket.on('setusername', function(data){
-    if(users.indexOf(data) > -1){
-      socket.emit('userExists', data + ' Username is already taken. Please choose other.')
-    }else{
-      users.push(data);
-      socket.emit('userSet', {username:data, usernumber:users.length})
-    }
-  })
+// io.on('connection', function(socket){
+//   console.log('User is connected!');
+//   connectedUser++;
 
-  socket.on('msg', function(data){
-    io.sockets.emit('newmsg', data)
-  })
+//   socket.on('setusername', function(data){
+//     if(users.indexOf(data) > -1){
+//       socket.emit('userExists', data + ' Username is already taken. Please choose other.')
+//     }else{
+//       users.push(data);
+//       socket.emit('userSet', {username:data, usernumber:users.length})
+//     }
+//   })
 
-  socket.on('disconnect', function(){
-    console.log('User is disconnected!');
-    connectedUser--;
+//   socket.on('msg', function(data){
+//     io.sockets.emit('newmsg', data)
+//   })
 
-  })
-})
+//   socket.on('disconnect', function(){
+//     console.log('User is disconnected!');
+//     connectedUser--;
+
+//   })
+// })
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -100,8 +99,8 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
-http.listen(5000, function(){
-  console.log('Server is running on posrt 5000');
-})
+// http.listen(5000, function(){
+//   console.log('Server is running on posrt 5000');
+// })
 
 module.exports = app;
