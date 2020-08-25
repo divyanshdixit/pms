@@ -14,6 +14,7 @@ var addNewPasswordRouter = require('./routes/addNewPassword');
 var passwordListRouter = require('./routes/passwordList');	
 var zipRouter = require('./routes/getZip')	
 var emailRouter = require('./routes/sendEmail')	
+var fileUploadRouter = require('./routes/fileUploading')	
 var addCatAPI = require('./apis/add-category');	
 var productAPI = require('./apis/product');	
 var userAPI = require('./apis/user');	
@@ -31,7 +32,7 @@ app.use(logger('dev'));
 app.use(express.json());	
 app.use(express.urlencoded({ extended: false }));	
 app.use(cookieParser());	
-app.use(express.static(path.join(__dirname, 'public')));	
+app.use('/fakepath',express.static(path.join(__dirname, 'public')));	
 // use the session	
 app.use(session({	
 secret:'anything',	
@@ -49,6 +50,7 @@ app.use('/addnewpassword', addNewPasswordRouter )
 app.use('/passwordlist', passwordListRouter )	
 app.use('/getzip', zipRouter )	
 app.use('/sendemail', emailRouter )	
+app.use('/file', fileUploadRouter)	
 app.use('/api', addCatAPI )	
 app.use('/api', productAPI )	
 app.use('/userapi', userAPI )	

@@ -84,7 +84,9 @@ router.get('/',  function(req, res, next) {
 
     var getUsername = userModel.findOne({username:loginUsername});
     getUsername.exec(function(err, result){
-      if(err) throw err;
+      if(err){
+        throw err;
+      }else{
       if(result){
         var getUserId = result._id;
         var getUserPassword = result.password
@@ -100,11 +102,12 @@ router.get('/',  function(req, res, next) {
 
               res.redirect('/dashboard');
         }else{
-          return res.render('index', { projectName: projectName, title: 'Login Form', msg:'Login Failed! Password is wrong, Please check it!' });
+          res.render('index', { projectName: projectName, title: 'Login Form', msg:'Login Failed! Password is wrong, Please check it!' });
         }
       }else{
-        return res.render('index', { projectName: projectName, title: 'Login Form', msg:'Login Failed! Wrong Username, Please check it!' })
+        res.render('index', { projectName: projectName, title: 'Login Form', msg:'Login Failed! Wrong Username, Please check it!' })
       }
+    }
       next();
     })
     
