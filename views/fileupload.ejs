@@ -1,0 +1,62 @@
+<%- include('header') -%>
+
+    <div class="row">
+        <div class="col-md-12">
+            <% if(success != ''){ %>
+                <%= success %>
+            <% } %>
+        </div>
+
+        <div class="col-md-12">
+            <!-- <form action="/file/upload" id="file-upload" method="post" enctype="multipart/form-data"> -->
+                <input type="file" name="file" id="file" class="form-control" multiple />
+                <!-- <input type="submit" class="btn btn-primary" value="upload"/> -->
+                <button type="button" id="upload-btn" class="btn btn-primary" onclick="send()"> Send </button>
+                <img src="" width="100%" class="image d-none" />
+            <!-- </form> -->
+        </div>
+    </div>
+
+    <script>
+        
+
+        // get the file name on chnage 
+            // $('input[type="file"]').change(function(e){
+            //     console.log(e);
+            //     var geekss = e.target.files[0].name; 
+            //     console.log(geekss);
+            // })
+
+        var send = function(){
+            
+            var myfiles = $('input[type=file]').prop('files');  // using jquery
+
+            // if we want to serve the any file from client to server we need multipart-formdata
+            // use js class FormData()
+
+            var formData = new FormData($("form").get(0));
+            
+            // append each file in formdata object
+            for(var i=0; i<myfiles.length; i++){
+                formData.append('myfile',  myfiles[i])
+            }
+
+            $.ajax({
+                url:'/file/upload',
+                type:'POST',
+                data:formData,
+                dataType:'json',
+                contentType:false,
+                processData:false,
+
+                success:function(result){
+                    console.log(result)
+                },
+                failure:function(error){
+                    console.log(error)
+                }
+            })
+        }
+
+    </script>
+<%- include('footer') -%>
