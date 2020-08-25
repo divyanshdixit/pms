@@ -47,7 +47,7 @@
 
     socket.on('newmsg', function(data) {
         if(data) {
-            $('#message-container').prependgit ('<div class="col-md-12"><b>' + data.username + '</b>: ' + data.message + '</div><br>')
+            $('#message-container').prepend('<div class="col-md-12"><b>' + data.username + '</b>: ' + data.message + '</div><br>') 
         }
     })
 
