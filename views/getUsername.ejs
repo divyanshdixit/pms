@@ -19,6 +19,22 @@
   <script>	
     var socket = io();	
     var user;	
+    window.status;
+
+    if(navigator.onLine){
+        status = '<i class="fa fa-circle status-green" aria-hidden="true"></i>';
+      }else{
+        status = '<i class="fa fa-circle status-red" aria-hidden="true"></i>';
+      }
+      
+      window.addEventListener('online', function(){
+        status = '<i class="fa fa-circle status-green" aria-hidden="true"></i>';
+      })
+
+      window.addEventListener('offline', function(){
+        status = '<i class="fa fa-circle status-red" aria-hidden="true"></i>';
+      })
+
     function setUsername(){	
         socket.emit('setusername', $('#name').val())	
     }	
@@ -42,11 +58,11 @@
     	
     function sendMessage(){	
       
-      if(navigator.onLine){
-        status = '<i class="fa fa-circle status-green" aria-hidden="true"></i>';
-      }else{
-        status = '<i class="fa fa-circle status-red" aria-hidden="true"></i>';
-      }
+      // if(navigator.onLine){
+      //   status = '<i class="fa fa-circle status-green" aria-hidden="true"></i>';
+      // }else{
+      //   status = '<i class="fa fa-circle status-red" aria-hidden="true"></i>';
+      // }
       
         var msg = $('#message').val();
         if(msg.length > 0){
@@ -62,7 +78,6 @@
       // use js class FormData()
       var myfiles = $('#file').prop('files');
       var formData = new FormData();
-      var status ;
 
       // append each file in formdata object
       for(var i=0; i<myfiles.length; i++){
@@ -78,7 +93,7 @@
             processData:false,
 
             success:function(result){
-                socket.emit('filesend', {file:myfiles, username:user})
+                socket.emit('filesend', {file:myfiles, username:user, status:status})
             },
             failure:function(error){
                 console.log(error)
