@@ -67,9 +67,12 @@ var projectName = "Password Management System";
 /* login page get route */  
 router.get('/',  function(req, res, next) {
   var loggedInUser = localStorage.getItem('loginUser');
-  
-  if(req.session.username){
-    res.redirect('/dashboard');
+  console.log(loggedInUser);
+  if(loggedInUser){ // req.session.username
+    // res.redirect('/dashboard');
+    res.render('dashboard', { projectName: projectName, title: 'User Dashboard',loginUser:loggedInUser, msg:'', url:req.url});
+
+    // return next();
   }else{
     res.render('index', { projectName: projectName, title: 'Login Form', msg:'' });
   }

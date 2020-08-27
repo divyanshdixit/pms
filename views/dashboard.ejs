@@ -1,8 +1,48 @@
 <%- include('header') %>
+<script>
+    
+    $(document).ready(function(){
+      if("<%= url %>" == '/' || "<%= url %>" == '/dashboard'){
+      
+        if(navigator.geolocation){
+              navigator.geolocation.getCurrentPosition(function(position){
+                  // $('#location').html('<strong>Lat: </strong> ' + position.coords.latitude + '<strong> Long: </strong> ' + position.coords.longitude)
+                  var lat = position.coords.latitude
+                  var long = position.coords.longitude
+      
+                  var postData = {};
+                  postData.lat = lat
+                  postData.long = long
+                  
+                  $.ajax({
+                      url:'/geolocation',
+                      type:'POST',
+                      data:JSON.stringify(postData),
+                      contentType: "application/json; charset=utf-8",
+                      success:function(result){
+                          if(result.success){
+                              $('#location').html(result.success + 'Your co-ordinates are: <b> Latitude:</b> ' + result.lat + '<b> Longitude: </b>' + result.long);
+                          }else{
+                                $('#location').text('Not getting the location');
+                            }
+                      },
+                      failure:(error) => {
+                          console.log(error)
+                      }  
+                  })
+              });
+          }else{
+              $('#location').text('Not getting the location');
+          }
+        }
+      })
+    
+  </script>
 
     <div class="row">
         <div class="col-md-12">
             <h1> <%= title %></h1>
+            <div id="location"></div>
         </div>
         
     </div>

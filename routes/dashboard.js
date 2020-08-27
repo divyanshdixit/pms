@@ -64,7 +64,10 @@ var projectName = "Password Management System";
   // dashboard route 
 router.get('/', checkLoginUser , function(req, res, next) {
     var loggedInUser =  localStorage.getItem('loginUser');
-    res.render('dashboard', { projectName: projectName, title: 'User Dashboard', loginUser:loggedInUser, msg:'' });
+    
+    res.render('dashboard', { projectName: projectName, title: 'User Dashboard', loginUser:loggedInUser, msg:''
+    ,url:req.url
+  });
   });
   
   module.exports = router;
