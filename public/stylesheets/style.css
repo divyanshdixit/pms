@@ -8,6 +8,16 @@ a {
   color: #00B7FF;
 }
 
+.status-green:before{
+  content: "\f111";
+  color: green!important;
+}
+
+.status-red:before{
+  content: "\f111";
+  color: red;
+}
+
 @media screen and (max-width:767px){
   body{
     width:100%
