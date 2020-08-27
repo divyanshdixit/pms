@@ -23,16 +23,21 @@
 
     if(navigator.onLine){
         status = '<i class="fa fa-circle status-green" aria-hidden="true"></i>';
+        $('.statuss').html(status)
       }else{
         status = '<i class="fa fa-circle status-red" aria-hidden="true"></i>';
+        $('.statuss').html(status)
       }
       
       window.addEventListener('online', function(){
+        
         status = '<i class="fa fa-circle status-green" aria-hidden="true"></i>';
+        $('.statuss').html(status)
       })
 
       window.addEventListener('offline', function(){
         status = '<i class="fa fa-circle status-red" aria-hidden="true"></i>';
+        $('.statuss').html(status)
       })
 
     function setUsername(){	
@@ -184,6 +189,7 @@
 
         <div class="row">	
 
+          <p class="statuss"> </p>
         <!-- showing error for alredy taken username -->	
 
         <div class="col-md-12">	
