@@ -35,7 +35,14 @@ server.on('listening', onListening);
 
 // 
 io.on('connection', function(socket){
-  console.log('User is connected!');
+
+  // send message for single user
+  socket.emit('message', 'Welcome user');
+
+  // send broadcasting message when user is connecting (it'll send the user except the user which is connecting)
+  
+  socket.broadcast.emit('message', 'User is connecting!');
+
   connectedUser++;
 
   socket.on('setusername', function(data){
@@ -48,15 +55,22 @@ io.on('connection', function(socket){
   })
 
   socket.on('msg', function(data){
-    io.sockets.emit('newmsg', data)
+    io.emit('newmsg', data)
+    
   })
 
   socket.on('filesend', function(data){
     io.sockets.emit('newfilesend', data);
   })
 
+  // send user and status
+  socket.on('userStatus', function(data){
+    io.emit('newUserStatus', data)
+  })
+
   socket.on('disconnect', function(){
-    console.log('User is disconnected!');
+    // everyone should know user has left the chat
+    io.emit('message', 'User is disconnecting!')
     connectedUser--;
 
   })

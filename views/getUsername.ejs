@@ -19,33 +19,47 @@
   <script>	
     var socket = io();	
     var user;	
+    var userStatus;
     window.status;
 
-    if(navigator.onLine){
+    function setUsername(){	
+        socket.emit('setusername', $('#name').val())	
+    }	
+
+    socket.on('message', (data) => {
+      $('.user-connecting').html(data);
+    })
+
+    socket.on('newUserStatus', function(data){
+      $('.userStatus').html(`username : ${data.username} Status: ${data.status}`)
+    })
+
+    socket.on('userSet', function(data)
+    {	
+        user = data.username;	
+        
+        if(navigator.onLine){
         status = '<i class="fa fa-circle status-green" aria-hidden="true"></i>';
         $('.statuss').html(status)
+        socket.emit('userStatus', {username:user, status:status})
       }else{
         status = '<i class="fa fa-circle status-red" aria-hidden="true"></i>';
         $('.statuss').html(status)
+        socket.emit('userStatus', {username:user, status:status})
       }
       
       window.addEventListener('online', function(){
-        
         status = '<i class="fa fa-circle status-green" aria-hidden="true"></i>';
-        $('.statuss').html(status)
+        $('.statuss').html(status);
+        socket.emit('userStatus', {username:user, status:status})
       })
 
       window.addEventListener('offline', function(){
         status = '<i class="fa fa-circle status-red" aria-hidden="true"></i>';
         $('.statuss').html(status)
+        socket.emit('userStatus', {username:user, status:status})
       })
 
-    function setUsername(){	
-        socket.emit('setusername', $('#name').val())	
-    }	
-    socket.on('userSet', function(data){	
-        user = data.username;	
-        
         // document.write('Welcome <strong> '+ user + ' </strong>, You can chat now.<br><br>')	
         $('.set-username').css('display', 'none');	
         $('#error').css('display', 'none');	
@@ -62,12 +76,6 @@
     })	
     	
     function sendMessage(){	
-      
-      // if(navigator.onLine){
-      //   status = '<i class="fa fa-circle status-green" aria-hidden="true"></i>';
-      // }else{
-      //   status = '<i class="fa fa-circle status-red" aria-hidden="true"></i>';
-      // }
       
         var msg = $('#message').val();
         if(msg.length > 0){
@@ -134,14 +142,11 @@
     })	
 
     socket.on('userDisconnected', function(data){
-      console.log(data);
       if(data){
         $('.status').text(data.username + ' disconnected!')
       }
     })
-    // socket.on('team_member_count', function(data){	
-    //     $('body').append(data.number + ' user are connected!');	
-    // })	
+
     </script>	
     </head>	
 
@@ -190,6 +195,9 @@
         <div class="row">	
 
           <p class="statuss"> </p>
+          <p class="userStatus"> </p>
+
+          <p class="user-connecting"> </p>
         <!-- showing error for alredy taken username -->	
 
         <div class="col-md-12">	
