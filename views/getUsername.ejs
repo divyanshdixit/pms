@@ -18,27 +18,11 @@
 
   <script>	
     var socket = io();	
-    var user;	
+    var user = 'User';
     var userStatus;
     window.status;
 
-    function setUsername(){	
-        socket.emit('setusername', $('#name').val())	
-    }	
-
-    socket.on('message', (data) => {
-      $('.user-connecting').html(data);
-    })
-
-    socket.on('newUserStatus', function(data){
-      $('.userStatus').html(`username : ${data.username} Status: ${data.status}`)
-    })
-
-    socket.on('userSet', function(data)
-    {	
-        user = data.username;	
-        
-        if(navigator.onLine){
+    if(navigator.onLine){
         status = '<i class="fa fa-circle status-green" aria-hidden="true"></i>';
         $('.statuss').html(status)
         socket.emit('userStatus', {username:user, status:status})
@@ -60,6 +44,22 @@
         socket.emit('userStatus', {username:user, status:status})
       })
 
+    function setUsername(){	
+        socket.emit('setusername', $('#name').val())	
+    }	
+
+    socket.on('message', (data) => {
+      $('.user-connecting').html(data);
+    })
+
+    socket.on('newUserStatus', function(data){
+      $('.userStatus').html(`username : ${data.username} Status: ${data.status}`)
+    })
+
+    socket.on('userSet', function(data)
+    {	
+        user = data.username;	
+        
         // document.write('Welcome <strong> '+ user + ' </strong>, You can chat now.<br><br>')	
         $('.set-username').css('display', 'none');	
         $('#error').css('display', 'none');	
