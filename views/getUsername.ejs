@@ -15,6 +15,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>	
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>	
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>	
+    <script src="./fakepath/javascripts/main.js"></script>
 
   <script>	
     var socket = io();	
@@ -44,6 +45,20 @@
         socket.emit('userStatus', {username:user, status:status})
       })
 
+      $(window).on('load', function(){
+
+        navigator.serviceWorker.register('./fakepath/javascripts/newServiceWorker.js')
+
+        .then( (regObj) => {
+          window.regObj = regObj;
+          console.log('registration success', regObj)
+      })
+      .catch(error => {
+        console.log('registration failed', error)
+      })
+
+    });
+
     function setUsername(){	
         socket.emit('setusername', $('#name').val())	
     }	
@@ -53,13 +68,64 @@
     })
 
     socket.on('newUserStatus', function(data){
-      $('.userStatus').html(`username : ${data.username} Status: ${data.status}`)
+      console.log(data)
+      $('.userStatus').html(`username : ${data.username} Status: ${data.status} <br>`)
     })
 
     socket.on('userSet', function(data)
     {	
         user = data.username;	
-        
+
+        // for push notificcation
+        if('serviceWorker' in navigator){
+          if('PushManager' in window){
+
+        window.Notification.requestPermission()
+        .then(status => {
+            if (window.Notification.permission == 'granted') {
+                // displayNotification();
+                console.log('Notification permission status:', status);
+                options = {
+                    body:`Notifications for ${user}`,
+                    icon:'./fakepath/uploads/employee.png',
+                    vibrate:[100, 50, 100],
+                    data:{
+                        username:user,
+                        dateOfArrival:Date.now(),
+                        primaryKey:1
+                    },
+                    actions:[
+                        {
+                            action:'Ok',
+                            title:'Ok',
+                            icon:'./fakepath/uploads/check.png'
+                        },
+                        {
+                            action:'Dismiss',
+                            title:'Dismiss',
+                            icon:'./fakepath/uploads/close.png'
+                        },
+                    ]
+                }
+                    // for displaying the notification
+                    regObj.showNotification(`Hi ${user}, You'll get all the notifications.`, options);
+
+            }else{
+                console.log('Permission not granted:', status);
+                // so registration will not be done
+            }
+        })
+        .catch(error => {
+            console.log(error)
+        })
+
+    }else{
+        console.log('push manager is not in window')
+    }
+  }else{
+    console.log('service worker is not in navigator')
+  }   
+  
         // document.write('Welcome <strong> '+ user + ' </strong>, You can chat now.<br><br>')	
         $('.set-username').css('display', 'none');	
         $('#error').css('display', 'none');	
@@ -116,6 +182,31 @@
 
     socket.on('newmsg', function(data) {	
         if(data) {	
+
+            var messOptions = {
+              body:`${data.message}`,
+              icon:'./fakepath/uploads/user.png',
+              vibrate:[100, 50, 100],
+              data:{
+                  username:user,
+                  dateOfArrival:Date.now(),
+                  primaryKey:1
+              },
+              actions:[
+                        {
+                            action:'show',
+                            title:'Show',
+                            icon:'./fakepath/uploads/eye.png'
+                        },
+                        {
+                            action:'Dismiss',
+                            title:'Dismiss',
+                            icon:'./fakepath/uploads/close.png'
+                        },
+                    ]
+            }
+            regObj.showNotification(`${data.username}`, messOptions);
+
             $('#message-container').prepend('<br><div class="col-md-12"> ' + data.status + ' <b>' + data.username + '</b>: ' + data.message + '</div><br>') 	
         }
     })	
@@ -126,6 +217,20 @@
                 for (var key in data.file[j]) {
                     if (key == 'name') {
                         var filename = data.file[j][key];
+
+                        var imageOptions = {
+                          body:`Image:`,
+                          image:'<img src="./fakepath/uploads/' + filename + '" alt="'+filename+'" class="image"/>',
+                          icon:'./fakepath/uploads/2016-09-08 (2).png',
+                          vibrate:[100, 50, 100],
+                          data:{
+                              username:user,
+                              dateOfArrival:Date.now(),
+                              primaryKey:1
+                          }
+                        }
+                        regObj.showNotification(`${data.username}`, imageOptions);
+                        
                         $('#message-container').prepend('<br><div class="col-md-12"> ' + data.status + ' <b>' + data.username + '</b>: <img src="./fakepath/uploads/' + filename + '" alt="'+filename+'" width="100%" class="image"/></div><br>') 	
                     }
                 }

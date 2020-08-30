@@ -1,0 +1,49 @@
+<%- include('header') -%>
+    <div class="row">
+        <div class="col-md-12">
+            <p> Service worker demo</p>
+        </div>
+
+        <div class="buttons">
+            <button class="trigger-push unsubscribe btn btn-primary" onclick="subscribe()">Trigger Push Notification</button>
+        </div>
+    </div>
+
+    <script>
+
+// function urlBase64ToUint8Array(base64String) {
+//     const padding = '='.repeat((4 - base64String.length % 4) % 4);
+//     const base64 = (base64String + padding)
+//       .replace(/-/g, '+')
+//       .replace(/_/g, '/');
+   
+//     const rawData = window.atob(base64);
+//     const outputArray = new Uint8Array(rawData.length);
+   
+//     for (let i = 0; i < rawData.length; ++i) {
+//       outputArray[i] = rawData.charCodeAt(i);
+//     }
+//     return outputArray;
+//   }
+
+// const vapidPublicKey = 'BMGXM4VPeJeOg1wJk0ppNKR-MSot66cL1Hwwy8JcIknOWIzJptDT4B7YSIL0yRkRLdkY6XAH-Q81W7T23gbilfo'
+// const convertedVapidKey = urlBase64ToUint8Array(vapidPublicKey);
+
+//         addEventListener('load', async function(){
+//             let sw = await navigator.serviceWorker.register('./ServiceWorker.js')
+//             console.log(sw)
+//         })
+
+//         async function subscribe(){
+//             let sw = navigator.serviceWorker.ready;
+//             let push = await sw.pushManager.subscribe({
+//                 userVisibleOnly : true,
+//                 applicationServerKey = convertedVapidKey
+//             })
+//             console.log(JSON.stringify(push))
+//         }
+
+    </script>
+
+    <script src="./fakepath/javascripts/main.js"></script>
+<%- include('footer') -%>

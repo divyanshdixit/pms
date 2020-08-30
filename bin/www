@@ -65,6 +65,7 @@ io.on('connection', function(socket){
 
   // send user and status
   socket.on('userStatus', function(data){
+    console.log(data);
     io.emit('newUserStatus', data)
   })
 
