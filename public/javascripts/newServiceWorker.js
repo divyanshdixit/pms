@@ -27,25 +27,28 @@ self.addEventListener('push', function(e){
 self.addEventListener('notificationclick', function(e) {
     console.log('Notification clicked');
     var notification = e.notification;
+    console.log(e.notification);
     var primaryKey = notification.data.primaryKey;
     var action = e.action;
   
-    if (action == 'explore') {
-        console.log('User open this notification')
-        e.waitUntil(clients.openWindow('https://www.google.com'));
+    if (action === 'Ok') {
+        e.waitUntil(clients.openWindow('/'));
         notification.close();
-      
+    }else if(action === 'show'){
+        e.waitUntil(clients.openWindow('/chat'));
+    }else if(action === 'hide'){
+        notification.close();
+    }else if(action === 'Dismiss'){
+        notification.close();
     } else {
         notification.close();
-        console.log('Notification closed');
     }
   });
 
   // notificationclose  example
 self.addEventListener('notificationclose', function(e) {
     var notification = e.notification;
-    console.log(notification);
-    var primaryKey = notification.data.primaryKey;
-    console.log('Closed notification: ' + primaryKey);
+    notification.close();
+    // console.log('Slide to notification panel:', notification);
   });
   

@@ -42,16 +42,18 @@ router.post('/', checkLoginUser, function(req, res){
                 lat:req.body.lat,
                 long:req.body.long
             })
+
+            res.json({success:'<p> Thank you for your location! </p>', lat:req.body.lat, long:req.body.long})
         
-            locationDetails.save( (err, data) => {
-                if(err) {
-                    res.json({error:err})
-                }
-                if(data){
-                    res.json({success:'<p> Thank you for your location! </p>', lat:req.body.lat, long:req.body.long})
-                }
+            // locationDetails.save( (err, data) => {
+            //     if(err) {
+            //         res.json({error:err})
+            //     }
+            //     if(data){
+            //         res.json({success:'<p> Thank you for your location! </p>', lat:req.body.lat, long:req.body.long})
+            //     }
                 
-            })
+            // })
             
         }else{
             res.json({success:'<p> Thank you for your location! </p>', lat:req.body.lat, long:req.body.long})

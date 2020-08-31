@@ -82,6 +82,10 @@ let sub = {
 }
 // webpush.sendNotification(sub, 'Test message')
 
+app.get('/about', function(req, res){
+  res.sendFile('C:/Users/DIVYANSH/OneDrive/Desktop/pms/public/htmlFiles/about.html');
+})
+
 app.get('/subscribe', (req, res) => {
   res.render('push-notification', {title:'Push Notifications', projectName:'PMS- Push Notifications'})
 })
