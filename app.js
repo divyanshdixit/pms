@@ -59,7 +59,7 @@ app.use('/file', fileUploadRouter)
 app.use('/geolocation', geolocationRouter)	
 app.use('/api', addCatAPI )	
 app.use('/api', productAPI )	
-app.use('/userapi', userAPI )	
+app.use('/userapi', userAPI )
 
 
 // for setting up the push 
